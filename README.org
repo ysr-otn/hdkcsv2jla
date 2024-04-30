@@ -10,6 +10,13 @@
   LaTeX ファイルを生成する Python スクリプト hdkcsv2jla.py
 
 
+* 変更履歴
+
+- <2024-04-30 Tue 21:43>
+  - LICENSE の著作者を Yoshihiro Ohtani に変更
+  - README.org, address.csv, example.tex, example.pdf, hdkcsv2jla.py を追加
+
+
 * 準備
 
 ** はがきデザインキットのフォーマットの CSV ファイル
@@ -18,9 +25,9 @@
 1  - 送受履歴は ~2023送:2023受返:2024送~ のように西暦 + 送受信の履歴を ~:~ で連結したもの
   - [[file:address.csv]]: CSV ファイルの例
 
-  	#+begin_src csv
-  	氏名(姓),氏名(名),郵便番号(自宅欄),自宅住所(都道府県),自宅住所(市区町村),自宅住所(番地等),自宅住所(建物名),敬称,連名1(名:自宅欄),連名1(敬称:自宅欄),カテゴリ,送受履歴,デザインキット住所ID
-  	#+end_src
+    #+begin_src csv
+    氏名(姓),氏名(名),郵便番号(自宅欄),自宅住所(都道府県),自宅住所(市区町村),自宅住所(番地等),自宅住所(建物名),敬称,連名1(名:自宅欄),連名1(敬称:自宅欄),カテゴリ,送受履歴,デザインキット住所ID
+    #+end_src
 
 ** jletteraddress のフォーマットの TeX ファイル
 
@@ -28,69 +35,69 @@
   [[https://github.com/ysr-otn/jletteraddress/blob/master/jletteraddress.cls][jletteraddress.cls]] を LaTeX のクラスファイルのパスの通ったディレクトリに置き，同じく [[https://github.com/ysr-otn/jletteraddress][ysr-otn / jletteraddress]] の
   [[https://github.com/ysr-otn/jletteraddress/blob/master/example.tex][example.tex]] を自身の年賀状の環境に応じて編集する
   - 差出人の連名を追加
-	#+begin_src LaTeX
-	% Sender's informations
-	\sendername{千利休}
-	\senderaddressa{大阪府堺市堺区宿院町西一七}
-	\senderaddressb{宮寺町中尾グランド三〇五}
-	\senderpostcode{9290334}
-	#+end_src
-	#+begin_center
-	↓
-	#+end_center
-	#+begin_src LaTeX
-	% Sender's informations
-	\sendername{千利休　}
-	\sendernameb{宝心妙樹}
-	\senderaddressa{大阪府堺市堺区宿院町西一七}
-	\senderaddressb{宮寺町中尾グランド三〇五}
-	\senderpostcode{9290334}
-	#+end_src
+    #+begin_src LaTeX
+    % Sender's informations
+    \sendername{千利休}
+    \senderaddressa{大阪府堺市堺区宿院町西一七}
+    \senderaddressb{宮寺町中尾グランド三〇五}
+    \senderpostcode{9290334}
+    #+end_src
+    #+begin_center
+    ↓
+    #+end_center
+    #+begin_src LaTeX
+    % Sender's informations
+    \sendername{千利休　}
+    \sendernameb{宝心妙樹}
+    \senderaddressa{大阪府堺市堺区宿院町西一七}
+    \senderaddressb{宮寺町中尾グランド三〇五}
+    \senderpostcode{9290334}
+    #+end_src
   - 宛先の連名を追加(連名が無い人もダミーの連名を入れる)
-	#+begin_src LaTeX
-	\addaddress
-	  {織田　信長} {様}    
-	  {7691621}
-	  {香川県観音寺市大野原町井関一ー四ー一}    
-	  {}
-	
-	\addaddress
-	  {明智　光秀} {君}    
-	  {7618021}
-	  {香川県高松市鬼無町是竹一ー一一ー一二}    
-	  {パレス鬼無町是竹四一六}
-	#+end_src
-	#+begin_center
-	↓
-	#+end_center
-	#+begin_src LaTeX
-	\addaddress
-	  {織田 信長}{様}    
-	  {　　 濃姫}{様}
-	  {7691621}
-	  {香川県観音寺市大野原町井関一ー四ー一}    
-	  {}
-	
-	\addaddress
-	  {明智 光秀}{君}    
-	  {　　 　　}{}    
-	  {7618021}
-	  {香川県高松市鬼無町是竹一ー一一ー一二}    
-	  {パレス鬼無町是竹四一六}
-	#+end_src
+    #+begin_src LaTeX
+    \addaddress
+      {織田　信長} {様}    
+      {7691621}
+      {香川県観音寺市大野原町井関一ー四ー一}    
+      {}
+    
+    \addaddress
+      {明智　光秀} {君}    
+      {7618021}
+      {香川県高松市鬼無町是竹一ー一一ー一二}    
+      {パレス鬼無町是竹四一六}
+    #+end_src
+    #+begin_center
+    ↓
+    #+end_center
+    #+begin_src LaTeX
+    \addaddress
+      {織田 信長}{様}    
+      {　　 濃姫}{様}
+      {7691621}
+      {香川県観音寺市大野原町井関一ー四ー一}    
+      {}
+    
+    \addaddress
+      {明智 光秀}{君}    
+      {　　 　　}{}    
+      {7618021}
+      {香川県高松市鬼無町是竹一ー一一ー一二}    
+      {パレス鬼無町是竹四一六}
+    #+end_src
 
 
 
 * 使用方法
 
-1. hdkcsv2jla.py を用いてはがきデザインキットのフォーマットの CSV ファイル [[https://github.com/ysr-otn/hdkcsv2jla/address.csv][address.csv]] から
+1. hdkcsv2jla.py を用いてはがきデザインキットのフォーマットの CSV ファイル [[https://github.com/ysr-otn/hdkcsv2jla/blob/main/address.csv][address.csv]] から
    [[https://github.com/ysr-otn/jletteraddress/blob/master/example.tex][example.tex]] の宛先を置き換え
    - 下記は送信履歴に「1581送」が記載されている 1581 年の「千利休_仕事」の宛先から
-	 LaTeX ファイルの宛先を置き換えている
-	
-	: > hdkcsv2jla.py -i address.csv -o example.tex -y 1581 -c 千利休_仕事
+     LaTeX ファイルの宛先を置き換えている
+    
+    : > hdkcsv2jla.py -i address.csv -o example.tex -y 1581 -c 千利休_仕事
 
-2. 出来上がった [[https://github.com/ysr-otn/hdkcsv2jla/example.tex][example.tex]] を TeX にかけて dvi ファイルを生成し PDF ファイル [[https://github.com/ysr-otn/hdkcsv2jla/example.pdf][example.pdf]]
+2. 出来上がった [[https://github.com/ysr-otn/hdkcsv2jla/blob/main/example.tex][example.tex]] を TeX にかけて dvi ファイルを生成し PDF ファイル [[https://github.com/ysr-otn/hdkcsv2jla/blob/main/example.pdf][example.pdf]]
    に変換
 
 
