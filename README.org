@@ -12,6 +12,9 @@
 
 * 変更履歴
 
+- <2024-05-01 Wed 13:48>
+  - 旧字体の漢字を LaTeX の UTF, CID コードへの変換をファイルで指定できるように対応
+
 - <2024-04-30 Tue 21:43>
   - LICENSE の著作者を Yoshihiro Ohtani に変更
   - README.org, address.csv, example.tex, example.pdf, hdkcsv2jla.py を追加
@@ -22,7 +25,7 @@
 ** はがきデザインキットのフォーマットの CSV ファイル
 
 - 下記のようなはがきデザインキットのフォーマットの CSV ファイルを用意する
-1  - 送受履歴は ~2023送:2023受返:2024送~ のように西暦 + 送受信の履歴を ~:~ で連結したもの
+  - 送受履歴は ~2023送:2023受返:2024送~ のように西暦 + 送受信の履歴を ~:~ で連結したもの
   - [[https://github.com/ysr-otn/hdkcsv2jla/blob/main/address.csv][address.csv]]: CSV ファイルの例
 
     #+begin_src csv
@@ -86,6 +89,15 @@
       {パレス鬼無町是竹四一六}
     #+end_src
 
+** 旧字体の UTF, CID 変換ファイル
+
+- 旧字体を LaTeX で扱えるように漢字と UTF/CID のコードの対応を記述した UTF-8 の
+  テキストファイルを用意する
+  - [[https://github.com/ysr-otn/hdkcsv2jla/blob/main/old_kanjicode.txt][old_kanjicode.txt]]: 旧字体と UTF コードの例
+
+    : 﨑 UTF{FA11}
+    : 髙 UTF{9AD9}
+    : 鷗 UTF{9DD7}
 
 
 * 使用方法
@@ -94,8 +106,9 @@
    [[https://github.com/ysr-otn/jletteraddress/blob/master/example.tex][example.tex]] の宛先を置き換え
    - 下記は送信履歴に「1581送」が記載されている 1581 年の「千利休_仕事」の宛先から
      LaTeX ファイルの宛先を置き換えている
+   - 旧字体の LaTeX への変換のために [[https://github.com/ysr-otn/hdkcsv2jla/blob/main/old_kanjicode.txt][old_kanjicode.txt]] を指定している
     
-    : > hdkcsv2jla.py -i address.csv -o example.tex -y 1581 -c 千利休_仕事
+    : > hdkcsv2jla.py -i address.csv -o example.tex -k old_kanjicode.txt -y 1581 -c 千利休_仕事
 
 2. 出来上がった [[https://github.com/ysr-otn/hdkcsv2jla/blob/main/example.tex][example.tex]] を TeX にかけて dvi ファイルを生成し PDF ファイル [[https://github.com/ysr-otn/hdkcsv2jla/blob/main/example.pdf][example.pdf]]
    に変換

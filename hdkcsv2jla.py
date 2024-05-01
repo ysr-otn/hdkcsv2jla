@@ -30,8 +30,8 @@ class NengajoAddress:
         self.postn = data[Index.POSTN]
         self.adr1 = data[Index.ADR1]
         self.adr2 = data[Index.ADR2]
-        self.adr3 = conv_adr_japanese(data[Index.ADR3])
-        self.adr4 = conv_adr_japanese(data[Index.ADR4]);
+        self.adr3 = self.conv_adr_japanese(data[Index.ADR3])
+        self.adr4 = self.conv_adr_japanese(data[Index.ADR4])
         self.title = data[Index.TITLE];
         self.jname = data[Index.JNAME];
         self.jtitle = data[Index.JTITLE];
@@ -51,27 +51,32 @@ class NengajoAddress:
         else:
             self.send = False
     
-
-def conv_adr_japanese(address):
-    adr = address.translate(str.maketrans({'0': '〇', '1': '一', '2': '二', '3': '三', '4': '四', '5': '五', 
-                                           '6': '六', '7': '七', '8': '八', '9': '九', '-': 'ー'}))
-    return adr.translate(str.maketrans({'A': 'Ａ', 'B': 'Ｂ', 'C': 'Ｃ', 'D': 'Ｄ', 'E': 'Ｅ', 'F': 'Ｆ', 
-                                        'G': 'Ｇ', 'H': 'Ｈ', 'I': 'Ｉ', 'J': 'Ｊ', 'K': 'Ｋ', 'L': 'Ｌ', 
-                                        'M': 'Ｍ', 'N': 'Ｎ', 'O': 'Ｏ', 'P': 'Ｐ', 'Q': 'Ｑ', 'R': 'Ｒ', 
-                                        'S': 'Ｓ', 'T': 'Ｔ', 'U': 'Ｕ', 'V': 'Ｖ', 'W': 'Ｗ', 'X': 'Ｘ', 
-                                        'Y': 'Ｙ', 'Z': 'Ｚ'}))
-
-def conv_old_kanji2utfcode(kanji):
-    return kanji.translate(str.maketrans({'﨑': '\\UTF{FA11}', '髙': '\\UTF{9AD9}'}))
-
+    def conv_adr_japanese(self, address):
+        adr = address.translate(str.maketrans({'0': '〇', '1': '一', '2': '二', '3': '三', '4': '四', '5': '五', 
+                                               '6': '六', '7': '七', '8': '八', '9': '九', '-': 'ー'}))
+        return adr.translate(str.maketrans({'A': 'Ａ', 'B': 'Ｂ', 'C': 'Ｃ', 'D': 'Ｄ', 'E': 'Ｅ', 'F': 'Ｆ', 
+                                            'G': 'Ｇ', 'H': 'Ｈ', 'I': 'Ｉ', 'J': 'Ｊ', 'K': 'Ｋ', 'L': 'Ｌ', 
+                                            'M': 'Ｍ', 'N': 'Ｎ', 'O': 'Ｏ', 'P': 'Ｐ', 'Q': 'Ｑ', 'R': 'Ｒ', 
+                                            'S': 'Ｓ', 'T': 'Ｔ', 'U': 'Ｕ', 'V': 'Ｖ', 'W': 'Ｗ', 'X': 'Ｘ', 
+                                            'Y': 'Ｙ', 'Z': 'Ｚ'}))
 
 class HagakiDsgnKitCSV2JLetterAddress:
-    def __init__(self, input_file, output_file, year, category):
+    def __init__(self, input_file, output_file, kanjicode_file, year, category):
         self.input_file = input_file
         self.output_file = output_file
+        self.kanjicode_dict = {}
         self.year = year
         self.category = category
         self.adr_list = []
+        if(kanjicode_file != None):
+            with open(kanjicode_file) as f:
+                lines = f.readlines()
+                for line in lines:
+                    words = line.split()
+                    kanji = words[0]
+                    code = '\\' + words[1]
+                    self.kanjicode_dict[kanji] = code
+        print(self.kanjicode_dict)
         
     def read_data(self):
         with open(self.input_file) as f:
@@ -82,6 +87,10 @@ class HagakiDsgnKitCSV2JLetterAddress:
                 nenga_adr = NengajoAddress(line, self.year, self.category)
                 if nenga_adr.send == True:
                     self.adr_list.append(nenga_adr)
+
+    def conv_old_kanji2utfcode(self, kanji):
+        return kanji.translate(str.maketrans(self.kanjicode_dict))
+
 
     def get_element(self, element):
         return '{' + element + '}'
@@ -124,7 +133,7 @@ class HagakiDsgnKitCSV2JLetterAddress:
             else:
                 addaddress += '     ' + self.get_element(l.adr1 + ' ' + l.adr2) + '\n'
                 addaddress += '     ' + self.get_element(l.adr3 + ' ' + l.adr4) + '\n'
-            addaddress = conv_old_kanji2utfcode(addaddress)
+            addaddress = self.conv_old_kanji2utfcode(addaddress)
         
         
         with open(self.output_file) as f:
@@ -158,11 +167,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input-file', help = 'Input file of CVS file of Hagaki Design Kit.')
     parser.add_argument('-o', '--output-file', help = 'Output file of LaTeX file for class of jletteraddress.')
+    parser.add_argument('-k', '--kanjicode-file', help = 'Kanji code file for old kanji to use in LaTeX.')
     parser.add_argument('-y', '--year', type = int, help = 'The Year that nengajo will be send.')
     parser.add_argument('-c', '--category', help = 'Specify the category of nengajo data with \':\' to separate the keyword if it is needed.')
     args = parser.parse_args()
     
-    hdkcsv2jla = HagakiDsgnKitCSV2JLetterAddress(args.input_file, args.output_file, args.year, args.category)
+    hdkcsv2jla = HagakiDsgnKitCSV2JLetterAddress(args.input_file, args.output_file, args.kanjicode_file, args.year, args.category)
     
     hdkcsv2jla.read_data()
     hdkcsv2jla.write_data()
